@@ -1,0 +1,116 @@
+{
+	"name": "multicolorhighlighter",
+	"displayName": "MultiColorHighlighter",
+	"description": "",
+	"version": "0.0.1-alpha",
+    "publisher": "456ken",
+	"engines": {
+        "vscode": "^1.36.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/456ken/Highlighter-vscode"
+	},
+	"categories": [
+		"Other"
+	],
+	"icon": "mch.png",
+	"activationEvents": [
+		"*"
+	],
+	"main": "./out/src/extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "keywordlist.add",
+				"title": "Add Keyword",
+				"icon": {
+					"dark": "resources/dark/plus.svg",
+					"light": "resources/light/plus.svg"
+				}
+			},
+			{
+				"command": "keywordlist.delete",
+				"title": "Delete Keyword",
+				"icon": {
+					"dark": "resources/dark/cross.svg",
+					"light": "resources/light/cross.svg"
+				}
+			},
+			{
+				"command": "highlighter.add",
+				"title": "Add highlighter color",
+				"icon": {
+					"dark": "resources/dark/plus.svg",
+					"light": "resources/light/plus.svg"
+				}
+            },
+            {
+                "command": "highlighter.delete",
+                "title": "Delete highlighter color",
+				"icon": {
+					"dark": "resources/dark/cross.svg",
+					"light": "resources/light/cross.svg"
+			}
+            }
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "multicolorhighlighter",
+					"title": "%mch.title%",
+					"icon": "media/mch.svg"
+				}
+			]
+		},
+		"views": {
+			"multicolorhighlighter": [
+				{
+					"id": "keywordlist",
+					"name": "Keyword List"
+				}
+			]
+		},
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "keywordlist.add",
+                    "when": "view == keywordlist && viewItem == highlighter",
+                    "group": "inline"
+				},
+				{
+					"command": "keywordlist.delete",
+                    "when": "view == keywordlist && viewItem == keyworditem",
+                    "group": "inline"
+                },
+                {
+                    "command": "highlighter.delete",
+                    "when": "view == keywordlist && viewItem == highlighter",
+                    "group": "inline"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "highlighter.add",
+                    "when": "view == keywordlist",
+                    "group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+	},
+	"dependencies": {},
+	"devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.21",
+        "tslint": "^5.8.0",
+        "@types/node": "^8.10.25",
+        "@types/mocha": "^2.2.42"
+	}
+}
