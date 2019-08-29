@@ -1,5 +1,7 @@
 # Multi Color Highlighter
 
+Pre release version.
+
 ## Usage
 
 1. Select MultiColor Highlighter icon in Activity bar.
