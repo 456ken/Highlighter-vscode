@@ -1,18 +1,25 @@
 {
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
-	"description": "",
-	"version": "0.0.1-alpha",
-    "publisher": "456ken",
+	"description": "Highlighting keywords in the color you want.",
+	"version": "0.0.1",
+	"publisher": "456ken",
 	"engines": {
-        "vscode": "^1.36.0"
+		"vscode": "^1.36.0"
 	},
+	"license": "SEE LICENSE IN LICENSE.txt",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/456ken/Highlighter-vscode"
 	},
 	"categories": [
 		"Other"
+	],
+	"keywords", [
+		"highlight",
+		"highlighter",
+		"marker",
+		"linemarker"
 	],
 	"icon": "mch.png",
 	"activationEvents": [
