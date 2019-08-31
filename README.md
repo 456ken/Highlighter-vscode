@@ -2,6 +2,8 @@
 
 Pre release version.
 
+![Sample](media/sample.gif)
+
 ## Usage
 
 1. Select MultiColor Highlighter icon in Activity bar.

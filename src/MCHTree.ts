@@ -180,7 +180,7 @@ class Highlighter extends vscode.TreeItem {
 		});
 	}
 
-	contextValue = "highlighter";
+	readonly contextValue = "highlighter";
 }
 
 class KeywordItem extends vscode.TreeItem {
@@ -191,5 +191,5 @@ class KeywordItem extends vscode.TreeItem {
 		this.parent = parent;
 	}
 
-	contextValue = "keyworditem";
+	readonly contextValue = "keyworditem";
 }
