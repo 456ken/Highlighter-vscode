@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {localeString} from './i18n';
 
 type ColorInfo = {
 	name: string,
@@ -158,6 +159,8 @@ class Highlighter extends vscode.TreeItem {
 			editors = vscode.window.visibleTextEditors;
 		}
 
+		let counter = 0;
+		let limit = vscode.workspace.getConfiguration('multicolorhighlighter').get('upperlimit', 100000);
 		editors.forEach(editor => {
 			if (editor === undefined) {
 				return;
@@ -167,12 +170,24 @@ class Highlighter extends vscode.TreeItem {
 			let match;
 			this.children.forEach(keyworditem => {
 				const regEx = new RegExp(keyworditem.label, 'g');
-				while (match = regEx.exec(text)) {
+				while ((match = regEx.exec(text)) && counter < limit) {
+					counter++;
 					const startPos = editor.document.positionAt(match.index);
 					const endPos = editor.document.positionAt(match.index + match[0].length);
 					targets.push({ range: new vscode.Range(startPos, endPos) });
 				}
+				if (limit <= counter) {
+					// Exit foreach loop.
+					return;
+				}
 			});
+			if (limit <= counter) {
+				vscode.window.showErrorMessage(
+					localeString('multicolorhighlighter.warning.upperlimit.1') +
+					limit.toString() +
+					localeString('multicolorhighlighter.warning.upperlimit.2'));
+				return;
+			}
 
 			if (this.decorator !== undefined && 0 < targets.length) {
 				editor.setDecorations(this.decorator, targets);

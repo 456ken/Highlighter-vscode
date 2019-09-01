@@ -12,6 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.window.registerTreeDataProvider('keywordlist', MCHTreeDataProviderInstance);
     context.subscriptions.push(disposable);
 
+    // 
     disposable = vscode.commands.registerCommand('highlighter.add', () => MCHTreeDataProviderInstance.add());
     context.subscriptions.push(disposable);
     disposable = vscode.commands.registerCommand('highlighter.delete', offset => MCHTreeDataProviderInstance.delete(offset));
@@ -20,7 +21,11 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
     disposable = vscode.commands.registerCommand('keywordlist.delete', offset => MCHTreeDataProviderInstance.delete(offset));
     context.subscriptions.push(disposable);
+
+    // 
     disposable = vscode.window.onDidChangeVisibleTextEditors(editors => MCHTreeDataProviderInstance.refresh(editors));
+    context.subscriptions.push(disposable);
+    disposable = vscode.window.onDidChangeTextEditorSelection(() => MCHTreeDataProviderInstance.refresh());
     context.subscriptions.push(disposable);
 }
 

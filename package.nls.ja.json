@@ -1,3 +1,6 @@
 {
-    "mch.title":"MultiColor Highlighter"
+    "mch.title":"Multi Color Highlighter",
+    "multicolorhighlighter.description.upperlimit":"ハイライトするキーワードの上限数．",
+    "multicolorhighlighter.warning.upperlimit.1":"処理を中断します．キーワードのハイライト数の上限 [",
+    "multicolorhighlighter.warning.upperlimit.2":"] を超えました．"
 }

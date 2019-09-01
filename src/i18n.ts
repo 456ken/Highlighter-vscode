@@ -7,4 +7,4 @@ interface LocaleEntry {
 }
 const localeTabKey = <string>JSON.parse(<string>process.env.VSCODE_NLS_CONFIG).locale;
 const localeTable = Object.assign(localeEn, ((<{ [key: string]: LocaleEntry }>{ ja: localeJa })[localeTabKey] || {}));
-const localeString = (key: string): string => localeTable[key] || key;
+export const localeString = (key: string): string => localeTable[key] || key;
