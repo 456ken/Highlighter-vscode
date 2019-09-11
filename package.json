@@ -2,7 +2,7 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "1.0.0+build001",
+	"version": "1.0.0+build002",
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -60,6 +60,10 @@
 					"dark": "resources/dark/cross.svg",
 					"light": "resources/light/cross.svg"
 				}
+			},
+			{
+				"command": "mch.ChangeColor",
+				"title": "Change color"
 			}
 		],
 		"viewsContainers": {
@@ -90,6 +94,14 @@
 					"command": "mch.DeleteKeyword",
 					"when": "view == keywordlist && viewItem == keyworditem",
 					"group": "inline"
+				},
+				{
+					"command": "mch.ChangeColor",
+					"when": "view == keywordlist && viewItem == keyworditem"
+				},
+				{
+					"command": "mch.ChangeColor",
+					"when": "view == keywordlist && viewItem == highlighter"
 				},
 				{
 					"command": "mch.DeleteColor",

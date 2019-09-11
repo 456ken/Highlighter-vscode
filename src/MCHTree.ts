@@ -36,6 +36,67 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		Cyan: this._colorset[5],
 	};
 
+
+	/**
+	 * 
+	 * @param offset 
+	 */
+	change(offset: vscode.TreeItem) {
+		console.log(`Get value ${offset.label}.`);
+
+		vscode.window.showQuickPick(this._colorset.map(item => item.name)).then(select => {
+			if (select === undefined) {
+				return;
+			}
+			var selectcolorinfo = this._colorset.filter(value => value.name === select)[0];
+			// Search highlighter having a keyword.
+			var beforehighlighter: Highlighter | undefined;
+			if (offset instanceof Highlighter) {
+				beforehighlighter = offset;
+				// Delete before highlighter to move new it.
+				this.delete(beforehighlighter);
+			}
+			else if (offset instanceof KeywordItem) {
+				beforehighlighter = this.data.find(value => {
+					return (0 <= value.keywordItems.indexOf(<KeywordItem>offset));
+				});
+			}
+			if (beforehighlighter === undefined) {
+				return;
+			}
+
+			// Prepare moving keywords.
+			var keywordItems: KeywordItem[] | undefined;
+			if (offset instanceof Highlighter) {
+				keywordItems = beforehighlighter.keywordItems;
+			}
+			else if (offset instanceof KeywordItem) {
+				keywordItems = [<KeywordItem>offset];
+			}
+			if (keywordItems === undefined) {
+				return;
+			}
+
+			// Get a color to add keywords.
+			var newhighlighter = this.data.find(value => {
+				return (value.colortype === selectcolorinfo);
+			});
+			if (newhighlighter !== undefined) {
+				Highlighter.moveTo(keywordItems, newhighlighter);
+			}
+			else {
+				newhighlighter = new Highlighter(selectcolorinfo, []);
+				this.data.push(newhighlighter);
+				Highlighter.moveTo(keywordItems, newhighlighter);
+			}
+			this.refresh();
+		});
+	}
+
+	/**
+	 * 
+	 * @param offset 
+	 */
 	delete(offset: vscode.TreeItem) {
 		console.log(`Get value ${offset.label}.`);
 
@@ -146,6 +207,25 @@ class Highlighter extends vscode.TreeItem {
 	set keywordItems(children: KeywordItem[]) {
 		this.children = children;
 		this.refresh();
+	}
+
+	static moveTo(keyworditems: KeywordItem[], to: Highlighter) {
+		keyworditems.forEach(keyworditem => {
+			if (keyworditem.parent !== undefined) {
+				var beforeParent = keyworditem.parent;
+				if (beforeParent !== undefined) {
+					beforeParent.remove(keyworditem);
+				}
+				to.add(keyworditem);
+			}
+		});
+	}
+
+	remove(keyworditem: KeywordItem) {
+		var index = this.children.findIndex(value => value === keyworditem);
+		if (0 <= index) {
+			this.children.splice(index, 1);
+		}
 	}
 
 	add(keyword: string | KeywordItem) {

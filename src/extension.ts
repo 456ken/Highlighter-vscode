@@ -22,6 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
     disposable = vscode.commands.registerCommand('mch.DeleteKeyword', offset => MCHTreeDataProviderInstance.delete(offset));
     context.subscriptions.push(disposable);
+    disposable = vscode.commands.registerCommand('mch.ChangeColor', offset => MCHTreeDataProviderInstance.change(offset));
+    context.subscriptions.push(disposable);
 
     // 
     disposable = vscode.window.onDidChangeVisibleTextEditors(editors => MCHTreeDataProviderInstance.refresh(editors));
