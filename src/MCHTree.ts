@@ -7,6 +7,10 @@ type ColorInfo = {
 	icon: string
 };
 
+interface SaveList {
+	color: string;
+	keyword: string[];
+}
 
 /** Node's relation of Multi Color Highlighter.
  * KeywordList
@@ -36,6 +40,25 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		Cyan: this._colorset[5],
 	};
 
+
+	/**
+	 * Save the keywordlist to workspace settings.json.
+	 */
+	save() {
+		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
+		var savelist: SaveList[] = [];
+		this.data.forEach(highlighter => {
+			savelist.push(<SaveList>{
+				color : highlighter.colortype.name,
+				keyword : highlighter.keywordItems.map(keyworditem => keyworditem.label)
+			});
+		});
+
+		config.update("savelist", savelist, vscode.ConfigurationTarget.Workspace).then(
+			() => vscode.window.showInformationMessage("Done."),
+			(reason) => vscode.window.showErrorMessage("Error occurred.\n" + reason)
+		);
+	}
 
 	/**
 	 * 
@@ -157,9 +180,25 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * @param context 
 	 */
 	constructor(private context: vscode.ExtensionContext) {
-		this.data = [
-			new Highlighter(this.ColorSet.Green, [])
-		];
+		vscode.window.showInformationMessage('MCHTreeDataProvider constractor.');
+		
+		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
+		if (config === undefined) {
+			this.data.push(new Highlighter(this.ColorSet.Green, []));
+			return;
+		}
+
+		var savelist: SaveList[] | undefined = config.get("savelist");
+		if (savelist !== undefined && 1 <= savelist.length) {
+			savelist.forEach(obj => {
+				let highlighter = new Highlighter(this._colorset.filter(value => value.name === obj.color)[0], []);
+				obj.keyword.forEach(key => highlighter.add(key));
+				this.data.push(highlighter);
+			});
+		}
+		else {
+			this.data.push(new Highlighter(this.ColorSet.Green, []));
+		}
 	}
 
 	/**

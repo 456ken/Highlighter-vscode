@@ -2,7 +2,7 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "1.0.0+build002",
+	"version": "1.0.0+build003",
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -64,6 +64,10 @@
 			{
 				"command": "mch.ChangeColor",
 				"title": "Change color"
+			},
+			{
+				"command": "mch.SaveList",
+				"title": "Save list"
 			}
 		],
 		"viewsContainers": {
@@ -113,6 +117,10 @@
 				{
 					"command": "mch.AddColor",
 					"when": "view == keywordlist"
+				},
+				{
+					"command": "mch.SaveList",
+					"when": "view == keywordlist"
 				}
 			]
 		},
@@ -124,6 +132,9 @@
 						"type": "integer",
 						"default": "100000",
 						"description": "%multicolorhighlighter.description.upperlimit%"
+					},
+					"multicolorhighlighter.savelist": {
+						"type": "object"
 					}
 				}
 			}
