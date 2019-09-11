@@ -7,6 +7,12 @@ type ColorInfo = {
 	icon: string
 };
 
+
+/** Node's relation of Multi Color Highlighter.
+ * KeywordList
+ * + Highlighter
+ *   + KeywordItem
+ */
 export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 	_onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | null> = new vscode.EventEmitter<vscode.TreeItem | null>();
 	onDidChangeTreeData: vscode.Event<vscode.TreeItem | null> = this._onDidChangeTreeData.event;
@@ -47,6 +53,10 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 	}
 
+	/**
+	 * 
+	 * @param offset 
+	 */
 	add(offset?: vscode.TreeItem) {
 		if (!offset) {
 			// Add the color of the highlighter
@@ -72,19 +82,36 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 	}
 
+	/**
+	 * 
+	 * @param editors 
+	 */
 	refresh(editors?: vscode.TextEditor[]) {
 		this._onDidChangeTreeData.fire();
 		this.data.forEach(highlighter => highlighter.refresh(editors));
 	}
 
+	/**
+	 * 
+	 * @param context 
+	 */
 	constructor(private context: vscode.ExtensionContext) {
 		this.data = [
 			new Highlighter(this.ColorSet.Green, [])
 		];
 	}
+
+	/**
+	 * 
+	 * @param element 
+	 */
 	getTreeItem(element: KeywordItem | Highlighter): vscode.TreeItem | Thenable<vscode.TreeItem> {
 		return element;
 	}
+	/**
+	 * 
+	 * @param element 
+	 */
 	getChildren(element?: KeywordItem | Highlighter | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
 		if (!element) {
 			return this.data;
@@ -98,6 +125,9 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	}
 }
 
+/**
+ * 
+ */
 class Highlighter extends vscode.TreeItem {
 	decorator: vscode.TextEditorDecorationType | undefined;
 	colortype: ColorInfo;
@@ -144,6 +174,7 @@ class Highlighter extends vscode.TreeItem {
 			this.decorator.dispose();
 		}
 
+		// Define color.
 		this.decorator = vscode.window.createTextEditorDecorationType({
 			overviewRulerColor: this.colortype.code,
 			overviewRulerLane: vscode.OverviewRulerLane.Center,
@@ -155,10 +186,12 @@ class Highlighter extends vscode.TreeItem {
 			}
 		});
 
+		// If target text editors aren't inputted, all visible editors are targeted.
 		if (editors === undefined) {
 			editors = vscode.window.visibleTextEditors;
 		}
 
+		// Set decoration to text editors.
 		let counter = 0;
 		let limit = vscode.workspace.getConfiguration('multicolorhighlighter').get('upperlimit', 100000);
 		editors.forEach(editor => {
@@ -167,14 +200,13 @@ class Highlighter extends vscode.TreeItem {
 			}
 			const text = editor.document.getText();
 			const targets: vscode.DecorationOptions[] = [];
-			let match;
+			let match: number = -1;
 			this.children.forEach(keyworditem => {
-				const regEx = new RegExp(keyworditem.label, 'g');
-				while ((match = regEx.exec(text)) && counter < limit) {
+				while (0 <= (match = text.indexOf(keyworditem.label, match + 1)) && counter < limit) {
 					counter++;
-					const startPos = editor.document.positionAt(match.index);
-					const endPos = editor.document.positionAt(match.index + match[0].length);
-					targets.push({ range: new vscode.Range(startPos, endPos) });
+					const startPos = editor.document.positionAt(match);
+					const endPos = editor.document.positionAt(match + keyworditem.label.length);
+					targets.push({range: new vscode.Range(startPos, endPos)});
 				}
 				if (limit <= counter) {
 					// Exit foreach loop.
@@ -198,10 +230,13 @@ class Highlighter extends vscode.TreeItem {
 	readonly contextValue = "highlighter";
 }
 
+/**
+ * 
+ */
 class KeywordItem extends vscode.TreeItem {
-	parent: Highlighter|undefined;
+	parent: Highlighter | undefined;
 
-	constructor(public label: string, parent?:Highlighter) {
+	constructor(public label: string, parent?: Highlighter) {
 		super(label, vscode.TreeItemCollapsibleState.None);
 		this.parent = parent;
 	}

@@ -2,7 +2,7 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "0.0.2",
+	"version": "1.0.0+build001",
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -30,7 +30,7 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "keywordlist.add",
+				"command": "mch.AddKeyword",
 				"title": "Add Keyword",
 				"icon": {
 					"dark": "resources/dark/plus.svg",
@@ -38,7 +38,7 @@
 				}
 			},
 			{
-				"command": "keywordlist.delete",
+				"command": "mch.DeleteKeyword",
 				"title": "Delete Keyword",
 				"icon": {
 					"dark": "resources/dark/cross.svg",
@@ -46,16 +46,16 @@
 				}
 			},
 			{
-				"command": "highlighter.add",
-				"title": "Add highlighter color",
+				"command": "mch.AddColor",
+				"title": "Add color",
 				"icon": {
 					"dark": "resources/dark/plus.svg",
 					"light": "resources/light/plus.svg"
 				}
 			},
 			{
-				"command": "highlighter.delete",
-				"title": "Delete highlighter color",
+				"command": "mch.DeleteColor",
+				"title": "Delete color",
 				"icon": {
 					"dark": "resources/dark/cross.svg",
 					"light": "resources/light/cross.svg"
@@ -82,36 +82,35 @@
 		"menus": {
 			"view/item/context": [
 				{
-					"command": "keywordlist.add",
+					"command": "mch.AddKeyword",
 					"when": "view == keywordlist && viewItem == highlighter",
 					"group": "inline"
 				},
 				{
-					"command": "keywordlist.delete",
+					"command": "mch.DeleteKeyword",
 					"when": "view == keywordlist && viewItem == keyworditem",
 					"group": "inline"
 				},
 				{
-					"command": "highlighter.delete",
+					"command": "mch.DeleteColor",
 					"when": "view == keywordlist && viewItem == highlighter",
 					"group": "inline"
 				}
 			],
 			"view/title": [
 				{
-					"command": "highlighter.add",
-					"when": "view == keywordlist",
-					"group": "navigation"
+					"command": "mch.AddColor",
+					"when": "view == keywordlist"
 				}
 			]
 		},
-		"configuration":[
+		"configuration": [
 			{
 				"title": "MultiColorHighlighter",
 				"properties": {
-					"multicolorhighlighter.upperlimit":{
-						"type":"integer",
-						"default":"100000",
+					"multicolorhighlighter.upperlimit": {
+						"type": "integer",
+						"default": "100000",
 						"description": "%multicolorhighlighter.description.upperlimit%"
 					}
 				}

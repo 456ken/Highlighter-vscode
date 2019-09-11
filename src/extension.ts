@@ -7,19 +7,20 @@ import { MCHTreeDataProvider } from './MCHTree';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    vscode.window.showInformationMessage("extensinon activate.");
 
     const MCHTreeDataProviderInstance = new MCHTreeDataProvider(context);
     let disposable = vscode.window.registerTreeDataProvider('keywordlist', MCHTreeDataProviderInstance);
     context.subscriptions.push(disposable);
 
     // 
-    disposable = vscode.commands.registerCommand('highlighter.add', () => MCHTreeDataProviderInstance.add());
+    disposable = vscode.commands.registerCommand('mch.AddColor', () => MCHTreeDataProviderInstance.add());
     context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('highlighter.delete', offset => MCHTreeDataProviderInstance.delete(offset));
+    disposable = vscode.commands.registerCommand('mch.DeleteColor', offset => MCHTreeDataProviderInstance.delete(offset));
     context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('keywordlist.add', offset => MCHTreeDataProviderInstance.add(offset));
+    disposable = vscode.commands.registerCommand('mch.AddKeyword', offset => MCHTreeDataProviderInstance.add(offset));
     context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('keywordlist.delete', offset => MCHTreeDataProviderInstance.delete(offset));
+    disposable = vscode.commands.registerCommand('mch.DeleteKeyword', offset => MCHTreeDataProviderInstance.delete(offset));
     context.subscriptions.push(disposable);
 
     // 
@@ -31,4 +32,5 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+    vscode.window.showInformationMessage("extensinon deactivate.");
 }
