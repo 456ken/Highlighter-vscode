@@ -7,6 +7,16 @@ type ColorInfo = {
 	icon: string
 };
 
+interface SaveList {
+	color: string;
+	keyword: string[];
+}
+
+/** Node's relation of Multi Color Highlighter.
+ * KeywordList
+ * + Highlighter
+ *   + KeywordItem
+ */
 export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 	_onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | null> = new vscode.EventEmitter<vscode.TreeItem | null>();
 	onDidChangeTreeData: vscode.Event<vscode.TreeItem | null> = this._onDidChangeTreeData.event;
@@ -30,6 +40,132 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		Cyan: this._colorset[5],
 	};
 
+	/**
+	 * 
+	 */
+    setSelect() {
+		if (vscode.window.activeTextEditor === undefined) {
+			return;
+		}
+		var region: vscode.Selection = vscode.window.activeTextEditor.selection;
+		if (region.isEmpty) {
+			return;
+		}
+
+		var keyword = vscode.window.activeTextEditor.document.getText(region);
+
+		this.data.forEach(highlighter => {
+			if (highlighter.isactive) {
+				highlighter.add(keyword);
+				return;
+			}
+		});
+		this.refresh();
+	}
+	
+	/**
+	 * 
+	 * @param target Highlighter
+	 */
+	changeActive(target: Highlighter) {
+		var found: boolean = false;
+		this.data.forEach(highlighter => {
+			if (target === highlighter) {
+				found = true;
+				highlighter.isactive = true;
+				return;
+			}
+		});
+		if (found) {
+			this.data.forEach(highlighter => {
+				if (target !== highlighter) {
+					highlighter.isactive = false;
+				}
+			});
+			this.refresh();	
+		}
+	}
+
+	/**
+	 * Save the keywordlist to workspace settings.json.
+	 */
+	save() {
+		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
+		var savelist: SaveList[] = [];
+		this.data.forEach(highlighter => {
+			savelist.push(<SaveList>{
+				color : highlighter.colortype.name,
+				keyword : highlighter.keywordItems.map(keyworditem => keyworditem.label)
+			});
+		});
+
+		config.update("savelist", savelist, vscode.ConfigurationTarget.Workspace).then(
+			() => vscode.window.showInformationMessage("Done."),
+			(reason) => vscode.window.showErrorMessage("Error occurred.\n" + reason)
+		);
+	}
+
+	/**
+	 * 
+	 * @param offset 
+	 */
+	change(offset: vscode.TreeItem) {
+		console.log(`Get value ${offset.label}.`);
+
+		// Select color in QuickPick.
+		vscode.window.showQuickPick(this._colorset.map(item => item.name)).then(select => {
+			if (select === undefined) {
+				return;
+			}
+
+			var wasActive = false;
+			var targetItems: KeywordItem[] = [];
+			if (offset instanceof Highlighter) {
+				// backup and create new instance.
+				(<Highlighter>offset).keywordItems.forEach(keyword => targetItems.push(new KeywordItem(keyword.label)));
+				// delete selected instance.
+				this.data = this.data.filter(highlighter => highlighter.colortype !== (<Highlighter>offset).colortype);
+				if ((<Highlighter>offset).isactive) {
+					wasActive = true;
+				}
+				(<Highlighter>offset).delete();
+			}
+			else if (offset instanceof KeywordItem) {
+				// backup and create new instance.
+				targetItems.push(new KeywordItem((<KeywordItem>offset).label));
+				// delete selected instance.
+				this.data.forEach(highlighter => {
+					highlighter.keywordItems = highlighter.keywordItems.filter(keyword => keyword.label !== (<KeywordItem>offset).label);
+				});
+			}
+
+			var selectcolorinfo = this._colorset.filter(value => value.name === select)[0];
+			// Get a color to add keywords.
+			var newhighlighter = this.data.find(value => {
+				return (value.colortype === selectcolorinfo);
+			});
+			if (newhighlighter === undefined) {
+				newhighlighter = new Highlighter(selectcolorinfo, []);
+				this.data.push(newhighlighter);
+			}
+
+			targetItems.forEach(keyword => {
+				if (newhighlighter !== undefined) {
+					newhighlighter.add(keyword);
+				}
+			});
+			if (newhighlighter !== undefined && wasActive) {
+				this.changeActive(newhighlighter);
+			}
+				
+			this.refresh();
+		});
+	}
+
+	/**
+	 * 
+	 * @param offset 
+	 */
 	delete(offset: vscode.TreeItem) {
 		console.log(`Get value ${offset.label}.`);
 
@@ -47,6 +183,10 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 	}
 
+	/**
+	 * 
+	 * @param offset 
+	 */
 	add(offset?: vscode.TreeItem) {
 		if (!offset) {
 			// Add the color of the highlighter
@@ -54,7 +194,10 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 				if (select !== undefined) {
 					var colorinfo = this._colorset.filter(value => value.name === select)[0];
 					if (this.data.findIndex(highlighter => highlighter.colortype === colorinfo) < 0) {
-						this.data.push(new Highlighter(colorinfo, []));
+						var newhighlighter = new Highlighter(colorinfo, []);
+						this.data.push(newhighlighter);
+						this.changeActive(newhighlighter);
+
 						this.refresh();
 					}
 				}
@@ -72,19 +215,54 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 	}
 
+	/**
+	 * 
+	 * @param editors 
+	 */
 	refresh(editors?: vscode.TextEditor[]) {
 		this._onDidChangeTreeData.fire();
 		this.data.forEach(highlighter => highlighter.refresh(editors));
 	}
 
+	/**
+	 * 
+	 * @param context 
+	 */
 	constructor(private context: vscode.ExtensionContext) {
-		this.data = [
-			new Highlighter(this.ColorSet.Green, [])
-		];
+		vscode.window.showInformationMessage('MCHTreeDataProvider constractor.');
+		
+		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
+		if (config === undefined) {
+			this.data.push(new Highlighter(this.ColorSet.Green, []));
+			return;
+		}
+
+		var savelist: SaveList[] | undefined = config.get("savelist");
+		if (savelist !== undefined && 1 <= savelist.length) {
+			savelist.forEach(obj => {
+				let highlighter = new Highlighter(this._colorset.filter(value => value.name === obj.color)[0], []);
+				obj.keyword.forEach(key => highlighter.add(key));
+				this.data.push(highlighter);
+			});
+		}
+		else {
+			this.data.push(new Highlighter(this.ColorSet.Green, []));
+		}
+
+		this.changeActive(this.data[0]);
 	}
+
+	/**
+	 * 
+	 * @param element 
+	 */
 	getTreeItem(element: KeywordItem | Highlighter): vscode.TreeItem | Thenable<vscode.TreeItem> {
 		return element;
 	}
+	/**
+	 * 
+	 * @param element 
+	 */
 	getChildren(element?: KeywordItem | Highlighter | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
 		if (!element) {
 			return this.data;
@@ -98,9 +276,13 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	}
 }
 
+/**
+ * 
+ */
 class Highlighter extends vscode.TreeItem {
 	decorator: vscode.TextEditorDecorationType | undefined;
 	colortype: ColorInfo;
+	isactive: boolean;
 	private children: KeywordItem[];
 
 	constructor(colortype: ColorInfo, children: KeywordItem[]) {
@@ -108,6 +290,7 @@ class Highlighter extends vscode.TreeItem {
 		this.colortype = colortype;
 		this.children = children;
 		this.iconPath = colortype.icon;
+		this.isactive = false;
 	}
 
 	get keywordItems() {
@@ -118,16 +301,26 @@ class Highlighter extends vscode.TreeItem {
 		this.refresh();
 	}
 
+	clear() {
+		this.children = [];
+	}
+
+	remove(keyworditem: KeywordItem) {
+		var index = this.children.findIndex(value => value === keyworditem);
+		if (0 <= index) {
+			this.children.splice(index, 1);
+		}
+	}
+
 	add(keyword: string | KeywordItem) {
 		if (keyword instanceof KeywordItem) {
 			if (this.children.findIndex(value => value.label === keyword.label) < 0) {
-				keyword.parent = this;
 				this.children.push(keyword);
 			}
 		}
-		else {
+		else if (typeof keyword === 'string' && 0 < keyword.length) {
 			if (this.children.findIndex(value => value.label === keyword) < 0) {
-				this.children.push(new KeywordItem(keyword, this));
+				this.children.push(new KeywordItem(keyword));
 			}
 		}
 	}
@@ -144,6 +337,7 @@ class Highlighter extends vscode.TreeItem {
 			this.decorator.dispose();
 		}
 
+		// Define color.
 		this.decorator = vscode.window.createTextEditorDecorationType({
 			overviewRulerColor: this.colortype.code,
 			overviewRulerLane: vscode.OverviewRulerLane.Center,
@@ -155,10 +349,12 @@ class Highlighter extends vscode.TreeItem {
 			}
 		});
 
+		// If target text editors aren't inputted, all visible editors are targeted.
 		if (editors === undefined) {
 			editors = vscode.window.visibleTextEditors;
 		}
 
+		// Set decoration to text editors.
 		let counter = 0;
 		let limit = vscode.workspace.getConfiguration('multicolorhighlighter').get('upperlimit', 100000);
 		editors.forEach(editor => {
@@ -167,14 +363,13 @@ class Highlighter extends vscode.TreeItem {
 			}
 			const text = editor.document.getText();
 			const targets: vscode.DecorationOptions[] = [];
-			let match;
+			let match: number = -1;
 			this.children.forEach(keyworditem => {
-				const regEx = new RegExp(keyworditem.label, 'g');
-				while ((match = regEx.exec(text)) && counter < limit) {
+				while (0 <= (match = text.indexOf(keyworditem.label, match + 1)) && counter < limit) {
 					counter++;
-					const startPos = editor.document.positionAt(match.index);
-					const endPos = editor.document.positionAt(match.index + match[0].length);
-					targets.push({ range: new vscode.Range(startPos, endPos) });
+					const startPos = editor.document.positionAt(match);
+					const endPos = editor.document.positionAt(match + keyworditem.label.length);
+					targets.push({range: new vscode.Range(startPos, endPos)});
 				}
 				if (limit <= counter) {
 					// Exit foreach loop.
@@ -193,17 +388,20 @@ class Highlighter extends vscode.TreeItem {
 				editor.setDecorations(this.decorator, targets);
 			}
 		});
+
+		// 
+		this.description = this.isactive ? "active" : "";
 	}
 
 	readonly contextValue = "highlighter";
 }
 
+/**
+ * 
+ */
 class KeywordItem extends vscode.TreeItem {
-	parent: Highlighter|undefined;
-
-	constructor(public label: string, parent?:Highlighter) {
+	constructor(public label: string) {
 		super(label, vscode.TreeItemCollapsibleState.None);
-		this.parent = parent;
 	}
 
 	readonly contextValue = "keyworditem";

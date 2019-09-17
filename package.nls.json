@@ -2,5 +2,10 @@
     "mch.title":"Multi Color Highlighter",
     "multicolorhighlighter.description.upperlimit":"The upper limit of highlighting keyword count.",
     "multicolorhighlighter.warning.upperlimit.1":"Suspended a process. Found over the upper limit [",
-    "multicolorhighlighter.warning.upperlimit.2":"] of highlighting keyword count."
+    "multicolorhighlighter.warning.upperlimit.2":"] of highlighting keyword count.",
+    "mch.keywordlist.add.title": "Add keyword",
+    "mch.keywordlist.delete.title": "Delete keyword",
+    "mch.keywordlist.change.title": "Change keyword",
+    "mch.highlighter.add.title": "Add color",
+    "mch.highlighter.delete.title": "Delete color"
 }
