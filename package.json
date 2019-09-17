@@ -2,7 +2,8 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "1.0.0+build003",
+	"version": "1.0.0",
+	"preview": true,
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -68,6 +69,14 @@
 			{
 				"command": "mch.SaveList",
 				"title": "Save list"
+			},
+			{
+				"command": "mch.AddSelection",
+				"title": "Add keyword"
+			},
+			{
+				"command": "mch.SetCurrent",
+				"title": "Set active"
 			}
 		],
 		"viewsContainers": {
@@ -111,6 +120,10 @@
 					"command": "mch.DeleteColor",
 					"when": "view == keywordlist && viewItem == highlighter",
 					"group": "inline"
+				},
+				{
+					"command": "mch.SetCurrent",
+					"when": "view == keywordlist && viewItem == highlighter"
 				}
 			],
 			"view/title": [
@@ -121,6 +134,12 @@
 				{
 					"command": "mch.SaveList",
 					"when": "view == keywordlist"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "mch.AddSelection",
+					"when": "editorHasSelection && !editorHasMultipleSelections"
 				}
 			]
 		},
