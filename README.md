@@ -1,8 +1,6 @@
 # Multi Color Highlighter
 
-Pre release version.
-
-![Sample](media/sample.gif)
+![Sample](https://github.com/456ken/Highlighter-vscode/raw/master/media/sample.gif)
 
 ## Usage
 
@@ -29,4 +27,8 @@ Pre release version.
 - Gif (In this document)
 
   [Chronicler (vscode extension)](https://marketplace.visualstudio.com/items?itemName=arcsine.chronicler)
+
+## Etc
+
+  Please let me know if my English expressions are mistaken.
   

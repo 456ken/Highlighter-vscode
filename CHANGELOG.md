@@ -4,6 +4,18 @@ All notable changes to the "multicolorhighlighter" extension will be documented 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.0] - 2019.09.18
+
+### Added
+
+- Change highlighter color.
+- Save KeywordList.
+- Add keyword from drag and right-click menu.
+
+### Fixed
+
+- Disabled inputting regular expression.
+
 ## [0.0.2] - 2019.09.01
 
 ### Added

@@ -229,7 +229,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * @param context 
 	 */
 	constructor(private context: vscode.ExtensionContext) {
-		vscode.window.showInformationMessage('MCHTreeDataProvider constractor.');
+		// vscode.window.showInformationMessage('MCHTreeDataProvider constractor.');
 		
 		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
 		if (config === undefined) {

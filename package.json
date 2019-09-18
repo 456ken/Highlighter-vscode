@@ -3,7 +3,6 @@
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
 	"version": "1.0.0",
-	"preview": true,
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -168,10 +167,10 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"typescript": "^2.6.1",
-		"vscode": "^1.1.21",
-		"tslint": "^5.8.0",
+		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
-		"@types/mocha": "^2.2.42"
+		"tslint": "^5.20.0",
+		"typescript": "^2.6.1",
+		"vscode": "^1.1.21"
 	}
 }
