@@ -10,6 +10,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Enable to change highlighter brightness.
 
+### Fixed
+
+- Localization for Japanese.
+
 ## [1.0.0] - 2019.09.18
 
 ### Added
@@ -44,9 +48,13 @@ For Japanese
 
 ## [1.0.1] - 2019.MM.DD
 
-### Added
+### 新機能
 
 - ハイライトの明度の変更を可能にした．
+
+### 修正
+
+- 英語表記を日本語化．
 
 ## [1.0.0] - 2019.09.18
 
