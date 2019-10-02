@@ -1,11 +1,20 @@
 {
-    "mch.title":"Multi Color Highlighter",
-    "multicolorhighlighter.description.upperlimit":"The upper limit of highlighting keyword count.",
-    "multicolorhighlighter.warning.upperlimit.1":"Suspended a process. Found over the upper limit [",
-    "multicolorhighlighter.warning.upperlimit.2":"] of highlighting keyword count.",
+    "mch.title": "Multi Color Highlighter",
+    "mch.keywordlist.title": "Keyword List",
+    "multicolorhighlighter.description.upperlimit": "The upper limit of highlighting keyword count.",
+    "multicolorhighlighter.description.savelist": "Saved keywords.",
+    "multicolorhighlighter.description.brightness.dark": "Highlighter brightness (Dark theme). 255 is the brightest.",
+    "multicolorhighlighter.description.brightness.light": "Highlighter brightness (Light theme). 255 is the brightest.",
+    "multicolorhighlighter.warning.upperlimit.1": "Suspended a process. Found over the upper limit [",
+    "multicolorhighlighter.warning.upperlimit.2": "] of highlighting keyword count.",
+    "multicolorhighlighter.information.done": "Done.",
+    "multicolorhighlighter.error": "Error occurred.",
     "mch.keywordlist.add.title": "Add keyword",
     "mch.keywordlist.delete.title": "Delete keyword",
-    "mch.keywordlist.change.title": "Change keyword",
+    "mch.keywordlist.save.title": "Save list",
+    "mch.keywordlist.addselect.title": "Add keyword",
     "mch.highlighter.add.title": "Add color",
-    "mch.highlighter.delete.title": "Delete color"
+    "mch.highlighter.delete.title": "Delete color",
+    "mch.highlighter.change.title": "Change color",
+    "mch.highlighter.active.title": "Set active"
 }

@@ -36,6 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
     disposable = vscode.commands.registerCommand('mch.AddSelection', () => MCHTreeDataProviderInstance.setSelect());
     context.subscriptions.push(disposable);
+    disposable = vscode.workspace.onDidChangeConfiguration(() => MCHTreeDataProviderInstance.refresh());
+    context.subscriptions.push(disposable);
 
     // 
     MCHTreeDataProviderInstance.refresh();
