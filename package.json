@@ -2,7 +2,7 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -31,7 +31,7 @@
 		"commands": [
 			{
 				"command": "mch.AddKeyword",
-				"title": "Add Keyword",
+				"title": "%mch.keywordlist.add.title%",
 				"icon": {
 					"dark": "resources/dark/plus.svg",
 					"light": "resources/light/plus.svg"
@@ -39,7 +39,7 @@
 			},
 			{
 				"command": "mch.DeleteKeyword",
-				"title": "Delete Keyword",
+				"title": "%mch.keywordlist.delete.title%",
 				"icon": {
 					"dark": "resources/dark/cross.svg",
 					"light": "resources/light/cross.svg"
@@ -47,7 +47,7 @@
 			},
 			{
 				"command": "mch.AddColor",
-				"title": "Add color",
+				"title": "%mch.highlighter.add.title%",
 				"icon": {
 					"dark": "resources/dark/plus.svg",
 					"light": "resources/light/plus.svg"
@@ -55,7 +55,7 @@
 			},
 			{
 				"command": "mch.DeleteColor",
-				"title": "Delete color",
+				"title": "%mch.highlighter.delete.title%",
 				"icon": {
 					"dark": "resources/dark/cross.svg",
 					"light": "resources/light/cross.svg"
@@ -63,19 +63,19 @@
 			},
 			{
 				"command": "mch.ChangeColor",
-				"title": "Change color"
+				"title": "%mch.highlighter.change.title%"
 			},
 			{
 				"command": "mch.SaveList",
-				"title": "Save list"
+				"title": "%mch.keywordlist.save.title%"
 			},
 			{
 				"command": "mch.AddSelection",
-				"title": "Add keyword"
+				"title": "%mch.keywordlist.addselect.title%"
 			},
 			{
 				"command": "mch.SetCurrent",
-				"title": "Set active"
+				"title": "%mch.highlighter.active.title%"
 			}
 		],
 		"viewsContainers": {
@@ -91,7 +91,7 @@
 			"multicolorhighlighter": [
 				{
 					"id": "keywordlist",
-					"name": "Keyword List"
+					"name": "%mch.keywordlist.title%"
 				}
 			]
 		},
@@ -152,7 +152,22 @@
 						"description": "%multicolorhighlighter.description.upperlimit%"
 					},
 					"multicolorhighlighter.savelist": {
-						"type": "object"
+						"type": "object",
+						"description": "%multicolorhighlighter.description.savelist%"
+					},
+					"multicolorhighlighter.brightness.dark": {
+						"type": "integer",
+						"minimum": "0",
+						"maximum": "255",
+						"default": "85",
+						"description": "%multicolorhighlighter.description.brightness.dark%"
+					},
+					"multicolorhighlighter.brightness.light": {
+						"type": "integer",
+						"minimum": "0",
+						"maximum": "255",
+						"default": "85",
+						"description": "%multicolorhighlighter.description.brightness.light%"
 					}
 				}
 			}
