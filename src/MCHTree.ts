@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { localeString } from './i18n';
+import { isArray } from 'util';
 
 type ColorInfo = {
 	name: string,
@@ -109,13 +110,24 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * Load the keywordlist from workspace settings.json.
 	 */
 	load(): boolean {
-		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
-		if (config === undefined) {
+		const mchconfig = vscode.workspace.getConfiguration("multicolorhighlighter");
+		if (mchconfig === undefined) {
 			return false;
 		}
 
-		var savelist: SaveList[] | undefined = config.get("savelist");
-		if (savelist === undefined || savelist.length < 1) {
+		if (mchconfig.has("savelist") === false) {
+			return false;
+		}
+
+		const savelist = <SaveList[]>mchconfig.get("savelist");
+		const implementsSaveList = function (params: any): params is SaveList[] {
+			return (params !== null &&
+				typeof params === "object" &&
+				isArray(params) &&
+				typeof params[0].color === "string" &&
+				typeof params[0].keyword === "object");
+		};
+		if (!implementsSaveList(savelist)) {
 			return false;
 		}
 

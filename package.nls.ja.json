@@ -9,12 +9,12 @@
     "multicolorhighlighter.warning.upperlimit.2": "] を超えました。",
     "multicolorhighlighter.information.done": "完了しました。",
     "multicolorhighlighter.error": "エラーが発生しました。",
-    "mch.keywordlist.add.title": "追加",
-    "mch.keywordlist.delete.title": "削除",
+    "mch.keywordlist.add.title": "キーワードを追加",
+    "mch.keywordlist.delete.title": "キーワードを削除",
     "mch.keywordlist.save.title": "保存",
-    "mch.keywordlist.addselect.title": "追加",
-    "mch.highlighter.add.title": "追加",
-    "mch.highlighter.delete.title": "削除",
+    "mch.keywordlist.addselect.title": "キーワードを追加",
+    "mch.highlighter.add.title": "色を追加",
+    "mch.highlighter.delete.title": "色を削除",
     "mch.highlighter.change.title": "色を変更",
     "mch.highlighter.active.title": "アクティブに切り替え"
 }
