@@ -152,7 +152,18 @@
 						"description": "%multicolorhighlighter.description.upperlimit%"
 					},
 					"multicolorhighlighter.savelist": {
-						"type": "object",
+						"type": "array",
+						"items": {
+							"color": {
+								"type": "string"
+							},
+							"keyword": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
 						"description": "%multicolorhighlighter.description.savelist%"
 					},
 					"multicolorhighlighter.brightness.dark": {
