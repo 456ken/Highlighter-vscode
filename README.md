@@ -2,7 +2,14 @@
 
 ## Features
 
+- You are able to highlight keywords in the color you want.\
+キーワードを塗りたい色でハイライトすることが可能です．
 
+- There are 6 colors. (Red, Green, Blue, Yellow, Pink, Cyan)\
+色は全6色です．(赤，緑，青，黄，ピンク，水色)
+
+- Keyword list is able to save in workspace (./.vscode/settings.json).\
+キーワードリストはワークスペースに保存することが可能です．
 
 ![media/sample.gif](https://github.com/456ken/Highlighter-vscode/raw/master/media/sample.gif)
 
