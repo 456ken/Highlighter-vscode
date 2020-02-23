@@ -25,12 +25,12 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	data: Highlighter[] = [];
 
 	_colorset: ColorInfo[] = [
-		{ name: 'red', code: '#FF0000', icon: this.context.asAbsolutePath('resources/red.svg') },
-		{ name: 'green', code: '#00FF00', icon: this.context.asAbsolutePath('resources/green.svg') },
-		{ name: 'blue', code: '#0000FF', icon: this.context.asAbsolutePath('resources/blue.svg') },
-		{ name: 'yellow', code: '#FFFF00', icon: this.context.asAbsolutePath('resources/yellow.svg') },
-		{ name: 'pink', code: '#FF00FF', icon: this.context.asAbsolutePath('resources/pink.svg') },
-		{ name: 'cyan', code: '#00FFFF', icon: this.context.asAbsolutePath('resources/cyan.svg') },
+		{ name: 'Red', code: '#FF0000', icon: this.context.asAbsolutePath('resources/red.svg') },
+		{ name: 'Green', code: '#00FF00', icon: this.context.asAbsolutePath('resources/green.svg') },
+		{ name: 'Blue', code: '#0000FF', icon: this.context.asAbsolutePath('resources/blue.svg') },
+		{ name: 'Yellow', code: '#FFFF00', icon: this.context.asAbsolutePath('resources/yellow.svg') },
+		{ name: 'Pink', code: '#FF00FF', icon: this.context.asAbsolutePath('resources/pink.svg') },
+		{ name: 'Cyan', code: '#00FFFF', icon: this.context.asAbsolutePath('resources/cyan.svg') },
 	];
 	ColorSet = {
 		Red: this._colorset[0],
@@ -43,25 +43,61 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
 	/**
 	 * 
+	 * @param arg0 
 	 */
-	setSelect() {
+	toggle(color: string) {
 		if (vscode.window.activeTextEditor === undefined) {
 			return;
 		}
-		var region: vscode.Selection = vscode.window.activeTextEditor.selection;
+		// Get selecting keyword.
+		let region: vscode.Selection = vscode.window.activeTextEditor.selection;
 		if (region.isEmpty) {
 			return;
 		}
+		let keyword = vscode.window.activeTextEditor.document.getText(region);
 
-		var keyword = vscode.window.activeTextEditor.document.getText(region);
+		// Check keyword existence.
+		let deleteOperation: boolean = false;
+		this.data.forEach(highlighter => {
+			const found = highlighter.keywordItems.find(value => value.label === keyword);
+			if (found !== undefined && highlighter.colortype.name.toLowerCase() === color.toLowerCase()) {
+				highlighter.remove(found);
+				deleteOperation = true;
+			}
+			else if (found !== undefined) {
+				highlighter.remove(found);
+			}
+		});
+		if (deleteOperation) {
+			this.refresh();
+			return;
+		}
 
+		// Add keyword to target highlighter.
+		let highlighter = this.data.find(highlighter => highlighter.colortype.name.toLowerCase() === color.toLowerCase());
+		if (highlighter === undefined) {
+			var colorinfo = this._colorset.filter(value => value.name.toLowerCase() === color.toLowerCase())[0];
+			highlighter = new Highlighter(colorinfo, []);
+			this.data.push(highlighter);
+		}
+		if (highlighter === undefined) {
+			return;
+		}
+		highlighter.add(keyword);
+
+		this.refresh();
+	}
+
+	/**
+	 * 
+	 */
+	setSelect() {
 		this.data.forEach(highlighter => {
 			if (highlighter.isactive) {
-				highlighter.add(keyword);
+				this.toggle(highlighter.colortype.name);
 				return;
 			}
 		});
-		this.refresh();
 	}
 
 	/**
@@ -124,15 +160,18 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 			return (params !== null &&
 				typeof params === "object" &&
 				isArray(params) &&
+				1 <= params.length &&
 				typeof params[0].color === "string" &&
-				typeof params[0].keyword === "object");
+				typeof params[0].keyword === "object" &&
+				isArray(params[0].keyword) &&
+				typeof params[0].keyword[0] === "string");
 		};
 		if (!implementsSaveList(savelist)) {
 			return false;
 		}
 
 		savelist.forEach(obj => {
-			let highlighter = new Highlighter(this._colorset.filter(value => value.name === obj.color)[0], []);
+			let highlighter = new Highlighter(this._colorset.filter(value => value.name.toLowerCase() === obj.color.toLowerCase())[0], []);
 			obj.keyword.forEach(key => highlighter.add(key));
 			this.data.push(highlighter);
 		});
@@ -227,7 +266,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 			// Add the color of the highlighter
 			vscode.window.showQuickPick(this._colorset.map(item => item.name)).then(select => {
 				if (select !== undefined) {
-					var colorinfo = this._colorset.filter(value => value.name === select)[0];
+					var colorinfo = this._colorset.filter(value => value.name.toLowerCase() === select.toLowerCase())[0];
 					if (this.data.findIndex(highlighter => highlighter.colortype === colorinfo) < 0) {
 						var newhighlighter = new Highlighter(colorinfo, []);
 						this.data.push(newhighlighter);
@@ -365,7 +404,7 @@ class Highlighter extends vscode.TreeItem {
 			decbrightnessdark = 85;
 		}
 		var brightnessdark: string = Math.abs(decbrightnessdark).toString(16).toUpperCase();
-		
+
 		var decbrightnesslight: number = vscode.workspace.getConfiguration('multicolorhighlighter').get('brightness.light', 85);
 		if (decbrightnesslight === undefined) {
 			decbrightnesslight = 85;
@@ -375,13 +414,16 @@ class Highlighter extends vscode.TreeItem {
 		this.decorator = vscode.window.createTextEditorDecorationType({
 			overviewRulerColor: this.colortype.code,
 			overviewRulerLane: vscode.OverviewRulerLane.Center,
+			borderWidth: '1px',
+			borderRadius: '2px',
+			borderStyle: 'solid',
 			light: {
-				//backgroundColor: this.colortype.code + '55' 
-				backgroundColor: this.colortype.code + brightnesslight
+				backgroundColor: this.colortype.code + brightnesslight,
+				borderColor: this.colortype.code
 			},
 			dark: {
-				//backgroundColor: this.colortype.code + 'AA'
-				backgroundColor: this.colortype.code + brightnessdark
+				backgroundColor: this.colortype.code + brightnessdark,
+				borderColor: this.colortype.code
 			}
 		});
 

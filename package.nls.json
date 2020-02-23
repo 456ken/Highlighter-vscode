@@ -16,5 +16,11 @@
     "mch.highlighter.add.title": "Add color",
     "mch.highlighter.delete.title": "Delete color",
     "mch.highlighter.change.title": "Change color",
-    "mch.highlighter.active.title": "Set active"
+    "mch.highlighter.active.title": "Set active",
+    "mch.highlighter.toggleRed.title": "Red",
+    "mch.highlighter.toggleGreen.title": "Green",
+    "mch.highlighter.toggleBlue.title": "Blue",
+    "mch.highlighter.toggleYellow.title": "Yellow",
+    "mch.highlighter.togglePink.title": "Pink",
+    "mch.highlighter.toggleCyan.title": "Cyan"
 }

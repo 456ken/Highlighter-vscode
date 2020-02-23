@@ -76,6 +76,62 @@
 			{
 				"command": "mch.SetCurrent",
 				"title": "%mch.highlighter.active.title%"
+			},
+			{
+				"command": "mch.ToggleColorRed",
+				"title": "%mch.highlighter.toggleRed.title%"
+			},
+			{
+				"command": "mch.ToggleColorGreen",
+				"title": "%mch.highlighter.toggleGreen.title%"
+			},
+			{
+				"command": "mch.ToggleColorBlue",
+				"title": "%mch.highlighter.toggleBlue.title%"
+			},
+			{
+				"command": "mch.ToggleColorYellow",
+				"title": "%mch.highlighter.toggleYellow.title%"
+			},
+			{
+				"command": "mch.ToggleColorPink",
+				"title": "%mch.highlighter.togglePink.title%"
+			},
+			{
+				"command": "mch.ToggleColorCyan",
+				"title": "%mch.highlighter.toggleCyan.title%"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "mch.ToggleColorRed",
+				"key": "shift+h shift+1",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorGreen",
+				"key": "shift+h shift+2",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorBlue",
+				"key": "shift+h shift+3",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorYellow",
+				"key": "shift+h shift+4",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorPink",
+				"key": "shift+h shift+5",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorCyan",
+				"key": "shift+h shift+6",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
 			}
 		],
 		"viewsContainers": {

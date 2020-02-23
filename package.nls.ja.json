@@ -16,5 +16,11 @@
     "mch.highlighter.add.title": "色を追加",
     "mch.highlighter.delete.title": "色を削除",
     "mch.highlighter.change.title": "色を変更",
-    "mch.highlighter.active.title": "アクティブに切り替え"
+    "mch.highlighter.active.title": "アクティブに切り替え",
+    "mch.highlighter.toggleRed.title": "赤でハイライト",
+    "mch.highlighter.toggleGreen.title": "緑でハイライト",
+    "mch.highlighter.toggleBlue.title": "青でハイライト",
+    "mch.highlighter.toggleYellow.title": "黃でハイライト",
+    "mch.highlighter.togglePink.title": "ピンクでハイライト",
+    "mch.highlighter.toggleCyan.title": "水色でハイライト"
 }
