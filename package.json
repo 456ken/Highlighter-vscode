@@ -2,7 +2,7 @@
 	"name": "multicolorhighlighter",
 	"displayName": "MultiColorHighlighter",
 	"description": "Highlighting keywords in the color you want.",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"publisher": "456ken",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -76,6 +76,70 @@
 			{
 				"command": "mch.SetCurrent",
 				"title": "%mch.highlighter.active.title%"
+			},
+			{
+				"command": "mch.HideShow",
+				"title": "%mch.highlighter.hideshow.title%"
+			},
+			{
+				"command": "mch.EditKeyword",
+				"title": "%mch.highlighter.editkeyword.title%"
+			},
+			{
+				"command": "mch.ToggleColorRed",
+				"title": "%mch.highlighter.toggleRed.title%"
+			},
+			{
+				"command": "mch.ToggleColorGreen",
+				"title": "%mch.highlighter.toggleGreen.title%"
+			},
+			{
+				"command": "mch.ToggleColorBlue",
+				"title": "%mch.highlighter.toggleBlue.title%"
+			},
+			{
+				"command": "mch.ToggleColorYellow",
+				"title": "%mch.highlighter.toggleYellow.title%"
+			},
+			{
+				"command": "mch.ToggleColorPink",
+				"title": "%mch.highlighter.togglePink.title%"
+			},
+			{
+				"command": "mch.ToggleColorCyan",
+				"title": "%mch.highlighter.toggleCyan.title%"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "mch.ToggleColorRed",
+				"key": "ctrl+alt+1",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorGreen",
+				"key": "ctrl+alt+2",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorBlue",
+				"key": "ctrl+alt+3",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorYellow",
+				"key": "ctrl+alt+4",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorPink",
+				"key": "ctrl+alt+5",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
+			},
+			{
+				"command": "mch.ToggleColorCyan",
+				"key": "ctrl+alt+6",
+				"when": "editorHasSelection && !editorHasMultipleSelections"
 			}
 		],
 		"viewsContainers": {
@@ -103,36 +167,66 @@
 					"group": "inline"
 				},
 				{
+					"command": "mch.DeleteColor",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "inline"
+				},
+				{
+					"command": "mch.AddKeyword",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "highlighter@1"
+				},
+				{
+					"command": "mch.ChangeColor",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "highlighter@2"
+				},
+				{
+					"command": "mch.DeleteColor",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "highlighter@3"
+				},
+				{
+					"command": "mch.SetCurrent",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "highlighter@4"
+				},
+				{
+					"command": "mch.HideShow",
+					"when": "view == keywordlist && viewItem == highlighter",
+					"group": "highlighter@5"
+				},
+				{
 					"command": "mch.DeleteKeyword",
 					"when": "view == keywordlist && viewItem == keyworditem",
 					"group": "inline"
 				},
 				{
 					"command": "mch.ChangeColor",
-					"when": "view == keywordlist && viewItem == keyworditem"
+					"when": "view == keywordlist && viewItem == keyworditem",
+					"group": "keyworditem@1"
 				},
 				{
-					"command": "mch.ChangeColor",
-					"when": "view == keywordlist && viewItem == highlighter"
+					"command": "mch.EditKeyword",
+					"when": "view == keywordlist && viewItem == keyworditem",
+					"group": "keyworditem@2"
 				},
 				{
-					"command": "mch.DeleteColor",
-					"when": "view == keywordlist && viewItem == highlighter",
-					"group": "inline"
-				},
-				{
-					"command": "mch.SetCurrent",
-					"when": "view == keywordlist && viewItem == highlighter"
+					"command": "mch.DeleteKeyword",
+					"when": "view == keywordlist && viewItem == keyworditem",
+					"group": "keyworditem@3"
 				}
 			],
 			"view/title": [
 				{
 					"command": "mch.AddColor",
-					"when": "view == keywordlist"
+					"when": "view == keywordlist",
+					"group": "viewtitle@1"
 				},
 				{
 					"command": "mch.SaveList",
-					"when": "view == keywordlist"
+					"when": "view == keywordlist",
+					"group": "viewtitle@2"
 				}
 			],
 			"editor/context": [
@@ -152,7 +246,18 @@
 						"description": "%multicolorhighlighter.description.upperlimit%"
 					},
 					"multicolorhighlighter.savelist": {
-						"type": "object",
+						"type": "array",
+						"items": {
+							"color": {
+								"type": "string"
+							},
+							"keyword": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
 						"description": "%multicolorhighlighter.description.savelist%"
 					},
 					"multicolorhighlighter.brightness.dark": {
@@ -168,6 +273,11 @@
 						"maximum": "255",
 						"default": "85",
 						"description": "%multicolorhighlighter.description.brightness.light%"
+					},
+					"multicolorhighlighter.forcevisible": {
+						"type": "boolean",
+						"default": "true",
+						"description": "%multicolorhighlighter.description.forcevisible%"
 					}
 				}
 			}

@@ -38,6 +38,17 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
     disposable = vscode.workspace.onDidChangeConfiguration(() => MCHTreeDataProviderInstance.refresh());
     context.subscriptions.push(disposable);
+    disposable = vscode.commands.registerCommand('mch.HideShow', highlighter => MCHTreeDataProviderInstance.hideshow(highlighter));
+    context.subscriptions.push(disposable);
+    disposable = vscode.commands.registerCommand('mch.EditKeyword', keyword => MCHTreeDataProviderInstance.edit(keyword));
+
+    //
+    disposable = vscode.commands.registerCommand('mch.ToggleColorRed', offset => MCHTreeDataProviderInstance.toggle('Red'));
+    disposable = vscode.commands.registerCommand('mch.ToggleColorGreen', offset => MCHTreeDataProviderInstance.toggle('Green'));
+    disposable = vscode.commands.registerCommand('mch.ToggleColorBlue', offset => MCHTreeDataProviderInstance.toggle('Blue'));
+    disposable = vscode.commands.registerCommand('mch.ToggleColorYellow', offset => MCHTreeDataProviderInstance.toggle('Yellow'));
+    disposable = vscode.commands.registerCommand('mch.ToggleColorPink', offset => MCHTreeDataProviderInstance.toggle('Pink'));
+    disposable = vscode.commands.registerCommand('mch.ToggleColorCyan', offset => MCHTreeDataProviderInstance.toggle('Cyan'));
 
     // 
     MCHTreeDataProviderInstance.refresh();
