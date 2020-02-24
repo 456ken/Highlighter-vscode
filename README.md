@@ -18,11 +18,18 @@
 1. Select ***Multi Color Highlighter*** icon in Activity bar.\
 アクティビティ バーから ***Multi Color Highlighter*** を選択します．
 
-1. Add keywords to the color you want.\
-塗りたい色にキーワードを追加します．
+1. Add a keyword to the color you want in the following processes.\
+次の方法で塗りたい色にキーワードを追加します．
 
-1. You are also able to add keyword directly from context menu.\
-コンテキスト メニューからキーワードを追加することも可能です．
+    - Select and add to active color directly from context menu.\
+    コンテキスト メニューからキーワードを追加します．追加先はアクティブな色です．
+
+    - Select and enter keybindings.\
+    (Red:'ctrl+alt+1', Green:'ctrl+alt+2', Blue:'ctrl+alt+3', Yellow:'ctrl+alt+4', Pink: 'ctrl+alt+5', Cyan: 'ctrl+alt+6')\
+    キーボードショートカットで追加します．
+
+    - Push 'x' button the right of highlighter title in Keyword List.\
+    キーワードリストの色タイトルの右側にある'x'ボタンを押します．
 
 ## Thanks
 
