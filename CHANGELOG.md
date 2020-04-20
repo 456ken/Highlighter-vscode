@@ -4,6 +4,12 @@ All notable changes to the "multicolorhighlighter" extension will be documented 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.1.4] - 2020.04.20
+
+### Fixed
+
+- Security update.
+
 ## [1.1.3] - 2020.03.27
 
 ### Fixed
