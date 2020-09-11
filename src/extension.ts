@@ -10,45 +10,34 @@ export function activate(context: vscode.ExtensionContext) {
     // vscode.window.showInformationMessage("extensinon activate.");
 
     const MCHTreeDataProviderInstance = new MCHTreeDataProvider(context);
-    let disposable = vscode.window.registerTreeDataProvider('keywordlist', MCHTreeDataProviderInstance);
-    context.subscriptions.push(disposable);
 
-    // 
-    disposable = vscode.commands.registerCommand('mch.AddColor', () => MCHTreeDataProviderInstance.add());
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.DeleteColor', offset => MCHTreeDataProviderInstance.delete(offset));
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.AddKeyword', offset => MCHTreeDataProviderInstance.add(offset));
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.DeleteKeyword', offset => MCHTreeDataProviderInstance.delete(offset));
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.ChangeColor', offset => MCHTreeDataProviderInstance.change(offset));
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.SaveList', () => MCHTreeDataProviderInstance.save());
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.SetCurrent', offset => MCHTreeDataProviderInstance.changeActive(offset));
-    context.subscriptions.push(disposable);
-    
-    // 
-    disposable = vscode.window.onDidChangeVisibleTextEditors(editors => MCHTreeDataProviderInstance.refresh(editors));
-    context.subscriptions.push(disposable);
-    disposable = vscode.window.onDidChangeTextEditorSelection(() => MCHTreeDataProviderInstance.refresh());
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.AddSelection', () => MCHTreeDataProviderInstance.setSelect());
-    context.subscriptions.push(disposable);
-    disposable = vscode.workspace.onDidChangeConfiguration(() => MCHTreeDataProviderInstance.refresh());
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.HideShow', highlighter => MCHTreeDataProviderInstance.hideshow(highlighter));
-    context.subscriptions.push(disposable);
-    disposable = vscode.commands.registerCommand('mch.EditKeyword', keyword => MCHTreeDataProviderInstance.edit(keyword));
-
-    //
-    disposable = vscode.commands.registerCommand('mch.ToggleColorRed', offset => MCHTreeDataProviderInstance.toggle('Red'));
-    disposable = vscode.commands.registerCommand('mch.ToggleColorGreen', offset => MCHTreeDataProviderInstance.toggle('Green'));
-    disposable = vscode.commands.registerCommand('mch.ToggleColorBlue', offset => MCHTreeDataProviderInstance.toggle('Blue'));
-    disposable = vscode.commands.registerCommand('mch.ToggleColorYellow', offset => MCHTreeDataProviderInstance.toggle('Yellow'));
-    disposable = vscode.commands.registerCommand('mch.ToggleColorPink', offset => MCHTreeDataProviderInstance.toggle('Pink'));
-    disposable = vscode.commands.registerCommand('mch.ToggleColorCyan', offset => MCHTreeDataProviderInstance.toggle('Cyan'));
+    context.subscriptions.push(
+        // 
+        vscode.window.registerTreeDataProvider('keywordlist', MCHTreeDataProviderInstance),
+        //
+        vscode.commands.registerCommand('mch.AddColor', () => MCHTreeDataProviderInstance.add()),
+        vscode.commands.registerCommand('mch.DeleteColor', offset => MCHTreeDataProviderInstance.delete(offset)),
+        vscode.commands.registerCommand('mch.AddKeyword', offset => MCHTreeDataProviderInstance.add(offset)),
+        vscode.commands.registerCommand('mch.DeleteKeyword', offset => MCHTreeDataProviderInstance.delete(offset)),
+        vscode.commands.registerCommand('mch.ChangeColor', offset => MCHTreeDataProviderInstance.change(offset)),
+        vscode.commands.registerCommand('mch.SaveList', () => MCHTreeDataProviderInstance.save()),
+        vscode.commands.registerCommand('mch.SetCurrent', offset => MCHTreeDataProviderInstance.changeActive(offset)),
+        vscode.commands.registerCommand('mch.AddSelection', () => MCHTreeDataProviderInstance.setSelect()),
+        vscode.commands.registerCommand('mch.HideShow', highlighter => MCHTreeDataProviderInstance.hideshow(highlighter)),
+        vscode.commands.registerCommand('mch.EditKeyword', keyword => MCHTreeDataProviderInstance.edit(keyword)),
+        vscode.commands.registerCommand('mch.ToggleColorRed', () => MCHTreeDataProviderInstance.toggle('Red')),
+        vscode.commands.registerCommand('mch.ToggleColorGreen', () => MCHTreeDataProviderInstance.toggle('Green')),
+        vscode.commands.registerCommand('mch.ToggleColorBlue', () => MCHTreeDataProviderInstance.toggle('Blue')),
+        vscode.commands.registerCommand('mch.ToggleColorYellow', () => MCHTreeDataProviderInstance.toggle('Yellow')),
+        vscode.commands.registerCommand('mch.ToggleColorPink', () => MCHTreeDataProviderInstance.toggle('Pink')),
+        vscode.commands.registerCommand('mch.ToggleColorCyan', () => MCHTreeDataProviderInstance.toggle('Cyan')),
+        // Internal commands. Undefined in package.json.
+        MCHTreeDataProviderInstance.onDidChangeTreeData(() => MCHTreeDataProviderInstance.autosave()),
+        // Events which fires when some action occurs.
+        vscode.window.onDidChangeVisibleTextEditors(editors => MCHTreeDataProviderInstance.refresh(editors)),
+        vscode.window.onDidChangeTextEditorSelection(() => MCHTreeDataProviderInstance.refresh()),
+        vscode.workspace.onDidChangeConfiguration(() => MCHTreeDataProviderInstance.refresh()),
+    );
 
     // 
     MCHTreeDataProviderInstance.refresh();
@@ -57,4 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
     // vscode.window.showInformationMessage("extensinon deactivate.");
+
+    //
+    vscode.commands.executeCommand('mch.AutoSave');
 }

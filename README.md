@@ -43,7 +43,7 @@
 
 ## Etc
 
-- If my English expressions are mistaken, please let me know them.
+- Please let me know if my English expression is wrong.
 
 - Give feedback to me either [Github](https://github.com/456ken/Highlighter-vscode/pulls) or [Twitter](https://twitter.com/456ken_dev).\
 ご意見・ご要望は[Github](https://github.com/456ken/Highlighter-vscode/pulls) か [Twitter](https://twitter.com/456ken_dev)にご連絡ください．

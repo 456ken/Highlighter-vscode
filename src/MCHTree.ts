@@ -25,7 +25,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	_onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | null> = new vscode.EventEmitter<vscode.TreeItem | null>();
 	onDidChangeTreeData: vscode.Event<vscode.TreeItem | null> = this._onDidChangeTreeData.event;
 
-	data: Highlighter[] = [];
+	highlighters: Highlighter[] = [];
 
 	_colorset: ColorInfo[] = [
 		{ name: 'Red'   , code: '#FF0000', icon: this.context.asAbsolutePath('resources/red.svg'), hideicon: this.context.asAbsolutePath('resources/transparence.svg') },
@@ -48,8 +48,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * 
 	 */
     hideshow(target: Highlighter) {
-		var found: boolean = false;
-		const highlighter = this.data.find(highlighter => target === highlighter);
+		const highlighter = this.highlighters.find(highlighter => target === highlighter);
 		if (highlighter === undefined) {
 			return;
 		}
@@ -74,7 +73,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
 		// Check keyword existence.
 		let deleteOperation: boolean = false;
-		this.data.forEach(highlighter => {
+		this.highlighters.forEach(highlighter => {
 			const found = highlighter.keywordItems.find(value => value.label === keyword);
 			if (found !== undefined && highlighter.colortype.name.toLowerCase() === color.toLowerCase()) {
 				highlighter.remove(found);
@@ -90,11 +89,11 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 
 		// Add keyword to target highlighter.
-		let highlighter = this.data.find(highlighter => highlighter.colortype.name.toLowerCase() === color.toLowerCase());
+		let highlighter = this.highlighters.find(highlighter => highlighter.colortype.name.toLowerCase() === color.toLowerCase());
 		if (highlighter === undefined) {
 			var colorinfo = this._colorset.filter(value => value.name.toLowerCase() === color.toLowerCase())[0];
 			highlighter = new Highlighter(colorinfo, []);
-			this.data.push(highlighter);
+			this.highlighters.push(highlighter);
 		}
 		if (highlighter === undefined) {
 			return;
@@ -108,7 +107,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * 
 	 */
 	setSelect() {
-		this.data.forEach(highlighter => {
+		this.highlighters.forEach(highlighter => {
 			if (highlighter.isActive) {
 				this.toggle(highlighter.colortype.name);
 				return;
@@ -122,7 +121,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 */
 	changeActive(target: Highlighter) {
 		var found: boolean = false;
-		this.data.forEach(highlighter => {
+		this.highlighters.forEach(highlighter => {
 			if (target === highlighter) {
 				found = true;
 				highlighter.isActive = true;
@@ -130,7 +129,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 			}
 		});
 		if (found) {
-			this.data.forEach(highlighter => {
+			this.highlighters.forEach(highlighter => {
 				if (target !== highlighter) {
 					highlighter.isActive = false;
 				}
@@ -140,12 +139,19 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	}
 
 	/**
+	 * Auto-save the keywordlist.
+	 */
+    autosave() {
+		this.save();
+    }
+
+	/**
 	 * Save the keywordlist to workspace settings.json.
 	 */
 	save() {
 		var config = vscode.workspace.getConfiguration("multicolorhighlighter");
 		var savelist: SaveList[] = [];
-		this.data.forEach(highlighter => {
+		this.highlighters.forEach(highlighter => {
 			savelist.push(<SaveList>{
 				color: highlighter.colortype.name,
 				keyword: highlighter.keywordItems.map(keyworditem => keyworditem.label)
@@ -189,7 +195,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		savelist.forEach(obj => {
 			let highlighter = new Highlighter(this._colorset.filter(value => value.name.toLowerCase() === obj.color.toLowerCase())[0], []);
 			obj.keyword.forEach(key => highlighter.add(key));
-			this.data.push(highlighter);
+			this.highlighters.push(highlighter);
 		});
 
 		return true;
@@ -214,7 +220,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 				// backup and create new instance.
 				(<Highlighter>offset).keywordItems.forEach(keyword => targetItems.push(new KeywordItem(keyword.label)));
 				// delete selected instance.
-				this.data = this.data.filter(highlighter => highlighter.colortype !== (<Highlighter>offset).colortype);
+				this.highlighters = this.highlighters.filter(highlighter => highlighter.colortype !== (<Highlighter>offset).colortype);
 				if ((<Highlighter>offset).isActive) {
 					wasActive = true;
 				}
@@ -224,19 +230,19 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 				// backup and create new instance.
 				targetItems.push(new KeywordItem((<KeywordItem>offset).label));
 				// delete selected instance.
-				this.data.forEach(highlighter => {
+				this.highlighters.forEach(highlighter => {
 					highlighter.keywordItems = highlighter.keywordItems.filter(keyword => keyword.label !== (<KeywordItem>offset).label);
 				});
 			}
 
 			var selectcolorinfo = this._colorset.filter(value => value.name === select)[0];
 			// Get a color to add keywords.
-			var newhighlighter = this.data.find(value => {
+			var newhighlighter = this.highlighters.find(value => {
 				return (value.colortype === selectcolorinfo);
 			});
 			if (newhighlighter === undefined) {
 				newhighlighter = new Highlighter(selectcolorinfo, []);
-				this.data.push(newhighlighter);
+				this.highlighters.push(newhighlighter);
 			}
 
 			targetItems.forEach(keyword => {
@@ -262,11 +268,11 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		if (offset instanceof Highlighter) {
 			offset.delete();
 
-			this.data = this.data.filter(highlighter => highlighter !== offset);
+			this.highlighters = this.highlighters.filter(highlighter => highlighter !== offset);
 			this.refresh();
 		}
 		else if (offset instanceof KeywordItem) {
-			this.data.forEach(highlighter => {
+			this.highlighters.forEach(highlighter => {
 				highlighter.keywordItems = highlighter.keywordItems.filter(keyworditem => keyworditem !== offset);
 			});
 			this.refresh();
@@ -283,9 +289,9 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 			vscode.window.showQuickPick(this._colorset.map(item => item.name)).then(select => {
 				if (select !== undefined) {
 					var colorinfo = this._colorset.filter(value => value.name.toLowerCase() === select.toLowerCase())[0];
-					if (this.data.findIndex(highlighter => highlighter.colortype === colorinfo) < 0) {
+					if (this.highlighters.findIndex(highlighter => highlighter.colortype === colorinfo) < 0) {
 						var newhighlighter = new Highlighter(colorinfo, []);
-						this.data.push(newhighlighter);
+						this.highlighters.push(newhighlighter);
 						this.changeActive(newhighlighter);
 
 						this.refresh();
@@ -331,7 +337,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 */
 	refresh(editors?: vscode.TextEditor[]) {
 		this._onDidChangeTreeData.fire();
-		this.data.forEach(highlighter => highlighter.refresh(editors));
+		this.highlighters.forEach(highlighter => highlighter.refresh(editors));
 	}
 
 	/**
@@ -343,10 +349,10 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
 		var result = this.load();
 		if (!result) {
-			this.data.push(new Highlighter(this.ColorSet.Green, []));
+			this.highlighters.push(new Highlighter(this.ColorSet.Green, []));
 		}
 
-		this.changeActive(this.data[0]);
+		this.changeActive(this.highlighters[0]);
 	}
 
 	/**
@@ -362,7 +368,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 */
 	getChildren(element?: KeywordItem | Highlighter | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
 		if (!element) {
-			return this.data;
+			return this.highlighters;
 		}
 		else if (element instanceof Highlighter) {
 			return element.keywordItems;
@@ -378,7 +384,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 */
 	private checkExistKeyword(keyword: string, showInfo = true): boolean {
 		let result: boolean = false;
-		this.data.forEach(highlighter => {
+		this.highlighters.forEach(highlighter => {
 			if (highlighter.checkExistKeyword(keyword)) {
 				result = true;
 				return;
