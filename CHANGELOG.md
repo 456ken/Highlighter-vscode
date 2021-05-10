@@ -4,7 +4,7 @@ All notable changes to the "multicolorhighlighter" extension will be documented 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [1.1.4] - 2020.04.20
+## [1.1.4] - 2021.05.10
 
 ### Fixed
 
