@@ -291,7 +291,7 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"dependencies": {
-		"minimist": "^1.2.5"
+		"minimist": "^1.2.6"
 	},
 	"devDependencies": {
 		"@types/mocha": "^2.2.42",
@@ -299,6 +299,6 @@
 		"tslint": "^5.20.0",
 		"typescript": "^2.6.1",
 		"vscode": "^1.1.21",
-		"minimist": "^1.2.5"
+		"minimist": "^1.2.6"
 	}
 }
