@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { localeString } from './i18n';
-import { isArray } from 'util';
 import { Highlighter } from './Highlighter';
 import { KeywordItem } from './KeywordItem';
 
@@ -35,13 +34,13 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		{ name: 'Pink'  , code: '#FF00FF', icon: this.context.asAbsolutePath('resources/pink.svg'), hideicon: this.context.asAbsolutePath('resources/transparence.svg') },
 		{ name: 'Cyan'  , code: '#00FFFF', icon: this.context.asAbsolutePath('resources/cyan.svg'), hideicon: this.context.asAbsolutePath('resources/transparence.svg') },
 	];
-	ColorSet = {
-		Red: this._colorset[0],
-		Green: this._colorset[1],
-		Blue: this._colorset[2],
-		Yellow: this._colorset[3],
-		Pink: this._colorset[4],
-		Cyan: this._colorset[5],
+	colorSet = {
+		red: this._colorset[0],
+		green: this._colorset[1],
+		blue: this._colorset[2],
+		yellow: this._colorset[3],
+		pink: this._colorset[4],
+		cyan: this._colorset[5],
 	};
 
 	/**
@@ -172,19 +171,36 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 
 		const savelist = <SaveList[]>mchconfig.get("savelist");
-		const implementsSaveList = function (params: any): params is SaveList[] {
-			return (params !== null &&
-				typeof params === "object" &&
-				isArray(params) &&
-				1 <= params.length &&
-				typeof params[0].color === "string" &&
-				typeof params[0].keyword === "object" &&
-				isArray(params[0].keyword) &&
-				typeof params[0].keyword[0] === "string");
+		const implementsSaveList = (params: any): boolean => {
+			if (params === null ||
+				typeof params !== 'object' ||
+				!Array.isArray(params) ||
+				params.length < 1)
+			{
+				return false;
+			}
+			for (const param of params) {
+				if (typeof param.color !== "string" ||
+					typeof param.keyword !== "object" ||
+					!Array.isArray(param.keyword))
+				{
+					return false;
+				}
+				for (const keyword of param.keyword)
+				{
+					if (typeof keyword !== "string") {
+						return false;
+					}
+				}
+			}
+
+			return true;
 		};
+		
 		if (!implementsSaveList(savelist)) {
 			return false;
 		}
+		
 
 		savelist.forEach(obj => {
 			let highlighter = new Highlighter(this._colorset.filter(value => value.name.toLowerCase() === obj.color.toLowerCase())[0], []);
@@ -313,7 +329,11 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		if (keywordItem.contextValue !== "keyworditem") {
 			return;
 		}
-		let currentKeyword = keywordItem.label;
+		if (typeof keywordItem.label === "undefined") {
+			return;
+		}
+		let currentKeyword = typeof keywordItem.label === "string" ? keywordItem.label : keywordItem.label.label;
+		
 		vscode.window.showInputBox({placeHolder: "Input keyword.", value: currentKeyword}).then(newKeyword => {
 			if (newKeyword === undefined) {
 				return;
@@ -329,8 +349,8 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 	 * 
 	 * @param editors 
 	 */
-	refresh(editors?: vscode.TextEditor[]) {
-		this._onDidChangeTreeData.fire();
+	refresh(editors?: Readonly<vscode.TextEditor[]>) {
+		this._onDidChangeTreeData.fire(null);
 		this.data.forEach(highlighter => highlighter.refresh(editors));
 	}
 
@@ -343,7 +363,7 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
 		var result = this.load();
 		if (!result) {
-			this.data.push(new Highlighter(this.ColorSet.Green, []));
+			this.data.push(new Highlighter(this.colorSet.green, []));
 		}
 
 		this.changeActive(this.data[0]);
