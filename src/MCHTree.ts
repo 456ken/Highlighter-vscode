@@ -171,19 +171,36 @@ export class MCHTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 		}
 
 		const savelist = <SaveList[]>mchconfig.get("savelist");
-		const implementsSaveList = function (params: any): params is SaveList[] {
-			return (params !== null &&
-				typeof params === "object" &&
-				Array.isArray(params) &&
-				1 <= params.length &&
-				typeof params[0].color === "string" &&
-				typeof params[0].keyword === "object" &&
-				Array.isArray(params[0].keyword) &&
-				typeof params[0].keyword[0] === "string");
+		const implementsSaveList = (params: any): boolean => {
+			if (params === null ||
+				typeof params !== 'object' ||
+				!Array.isArray(params) ||
+				params.length < 1)
+			{
+				return false;
+			}
+			for (const param of params) {
+				if (typeof param.color !== "string" ||
+					typeof param.keyword !== "object" ||
+					!Array.isArray(param.keyword))
+				{
+					return false;
+				}
+				for (const keyword of param.keyword)
+				{
+					if (typeof keyword !== "string") {
+						return false;
+					}
+				}
+			}
+
+			return true;
 		};
+		
 		if (!implementsSaveList(savelist)) {
 			return false;
 		}
+		
 
 		savelist.forEach(obj => {
 			let highlighter = new Highlighter(this._colorset.filter(value => value.name.toLowerCase() === obj.color.toLowerCase())[0], []);
