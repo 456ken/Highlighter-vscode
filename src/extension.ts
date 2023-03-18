@@ -9,6 +9,7 @@ import { MCHTreeDataProvider } from './MCHTree';
 export function activate(context: vscode.ExtensionContext) {
     // vscode.window.showInformationMessage("extensinon activate.");
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const MCHTreeDataProviderInstance = new MCHTreeDataProvider(context);
     let disposable = vscode.window.registerTreeDataProvider('keywordlist', MCHTreeDataProviderInstance);
     context.subscriptions.push(disposable);

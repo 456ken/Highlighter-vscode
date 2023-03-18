@@ -60,7 +60,7 @@ export class Highlighter extends vscode.TreeItem {
     turnonoff() {
         this.isVisible = this.isVisible === true ? false : true;
     }
-    refresh(editors?: vscode.TextEditor[]) {
+    refresh(editors?: Readonly<vscode.TextEditor[]>) {
         //console.log(`Call refresh ${this.colortype.name} color!`);
         if (this.decorator !== undefined) {
             this.decorator.dispose();
